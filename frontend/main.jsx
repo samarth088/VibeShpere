@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import Hello from './components/Hello';
 
 function App() {
-  return <h1>Welcome to VibeSphere!</h1>;
+  return (
+    <div>
+      <h1>Welcome to VibeSphere!</h1>
+      <Hello />
+    </div>
+  );
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
