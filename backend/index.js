@@ -21,3 +21,5 @@ connectDB().then(() => {
     console.log(`Server started on port ${PORT}`);
   });
 });
+const commentRoutes = require('./routes/comment');
+app.use('/api/comments', commentRoutes);
