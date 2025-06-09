@@ -14,3 +14,5 @@ router.use('/user', userRoutes);
 router.use('/posts', postRoutes); // NEW
 
 module.exports = router;
+const uploadRoutes = require('./upload');
+router.use('/upload', uploadRoutes);
