@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from "react";
+import Post from "./Post";
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
-  const [error, setError] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    // Fetch posts
     fetch("/api/posts")
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((err) => setError("Failed to load posts"));
+      .then(res => res.json())
+      .then(data => setPosts(data));
+
+    // Fetch current user info
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch("/api/users/me", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(user => setCurrentUser(user._id));
+    }
   }, []);
 
   return (
     <div>
-      <h2>Feed</h2>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {posts.length === 0 && <div>No posts yet.</div>}
-      {posts.map((post) => (
-        <div key={post._id} style={{ border: "1px solid #ccc", margin: "1em 0", padding: "1em" }}>
-          <div><b>{post.user?.username || "Unknown"}</b></div>
-          <div>{post.content}</div>
-          <div style={{ fontSize: "0.8em", color: "#888" }}>{new Date(post.createdAt).toLocaleString()}</div>
-        </div>
+      {posts.map(post => (
+        <Post key={post._id} post={post} currentUser={currentUser} />
       ))}
     </div>
   );
