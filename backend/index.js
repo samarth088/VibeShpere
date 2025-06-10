@@ -16,10 +16,14 @@ app.get('/', (req, res) => {
   res.send('VibeSphere Backend is running!');
 });
 
+const commentRoutes = require('./routes/comment');
+app.use('/api/comments', commentRoutes);
+
+const likeRoutes = require('./routes/like');
+app.use('/api/likes', likeRoutes);
+
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });
 });
-const commentRoutes = require('./routes/comment');
-app.use('/api/comments', commentRoutes);
