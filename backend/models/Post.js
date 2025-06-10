@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
-const postSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+const PostSchema = new mongoose.Schema({
+  // ... existing fields ...
   content: { type: String, required: true },
-  imageUrl: { type: String }, // For future image support
-  createdAt: { type: Date, default: Date.now }
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  createdAt: { type: Date, default: Date.now },
+  // Add this line:
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
-module.exports = mongoose.model('Post', postSchema);
+module.exports = mongoose.model('Post', PostSchema);
