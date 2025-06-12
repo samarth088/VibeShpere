@@ -1,31 +1,25 @@
 import React, { useState } from "react";
-import ImageUpload from "./ImageUpload"; // Optional, include only if image upload is enabled
+import ImageUpload from "./ImageUpload"; // Optional - Only if image upload feature exists
 
 export default function CreatePost({ onPostCreated }) {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [status, setStatus] = useState({ error: "", success: "" });
+  const [loading, setLoading] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setStatus({ error: "", success: "" });
 
-    const trimmedContent = content.trim();
-    if (!trimmedContent) {
-      setError("Post content cannot be empty.");
-      return;
-    }
+    const trimmed = content.trim();
+    if (!trimmed) return setStatus({ error: "Post content cannot be empty." });
 
     const token = localStorage.getItem("token");
-    if (!token) {
-      setError("You must be logged in to post.");
-      return;
-    }
+    if (!token) return setStatus({ error: "Login required to post." });
 
+    setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/posts`, {
         method: "POST",
@@ -33,23 +27,20 @@ export default function CreatePost({ onPostCreated }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ content: trimmedContent, imageUrl }),
+        body: JSON.stringify({ content: trimmed, imageUrl }),
       });
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to create post.");
-      }
+      if (!res.ok) throw new Error(data.message || "Failed to create post");
 
       setContent("");
       setImageUrl("");
-      setSuccess("Post created!");
+      setStatus({ success: "Post created successfully!" });
       if (onPostCreated) onPostCreated();
     } catch (err) {
-      console.error("Create post failed:", err);
-      setError(err.message || "Something went wrong.");
+      setStatus({ error: err.message || "Something went wrong." });
     }
+    setLoading(false);
   };
 
   return (
@@ -59,28 +50,47 @@ export default function CreatePost({ onPostCreated }) {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="What's on your mind?"
+        rows={4}
         required
-        rows={3}
-        style={{ width: "100%", padding: "8px" }}
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "6px",
+          border: "1px solid #ccc",
+        }}
       />
       <br />
 
       {/* Optional image upload */}
       <ImageUpload onUpload={(url) => setImageUrl(url)} />
       {imageUrl && (
-        <div style={{ marginTop: 8 }}>
+        <div style={{ marginTop: 10 }}>
           <img
             src={imageUrl}
             alt="Preview"
-            style={{ maxWidth: 250, borderRadius: 6 }}
+            style={{ maxWidth: 250, borderRadius: 8, border: "1px solid #ddd" }}
           />
         </div>
       )}
 
-      <button type="submit" style={{ marginTop: 10 }}>Post</button>
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          marginTop: 10,
+          padding: "8px 16px",
+          background: "#007bff",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        {loading ? "Posting..." : "Post"}
+      </button>
 
-      {error && <div style={{ color: "red", marginTop: 6 }}>{error}</div>}
-      {success && <div style={{ color: "green", marginTop: 6 }}>{success}</div>}
+      {status.error && <p style={{ color: "red", marginTop: 6 }}>{status.error}</p>}
+      {status.success && <p style={{ color: "green", marginTop: 6 }}>{status.success}</p>}
     </form>
   );
-}
+      }
