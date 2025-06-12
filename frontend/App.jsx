@@ -44,7 +44,7 @@ function AppRoutes({ token, setToken }) {
           Feed
         </NavLink>
 
-        {token && (
+        {token ? (
           <>
             <NavLink
               to="/profile"
@@ -56,6 +56,26 @@ function AppRoutes({ token, setToken }) {
               Profile
             </NavLink>
             <Logout onLogout={handleLogout} />
+          </>
+        ) : (
+          <>
+            <NavLink
+              to="/login"
+              style={({ isActive }) => ({
+                fontWeight: isActive ? "bold" : "normal",
+                marginRight: 10,
+              })}
+            >
+              Login
+            </NavLink>
+            <NavLink
+              to="/register"
+              style={({ isActive }) => ({
+                fontWeight: isActive ? "bold" : "normal",
+              })}
+            >
+              Register
+            </NavLink>
           </>
         )}
       </nav>
@@ -71,18 +91,25 @@ function AppRoutes({ token, setToken }) {
                 <Feed key={postRefresh} />
               </>
             ) : (
-              <AuthForm onLogin={handleLogin} />
+              <AuthForm onLogin={handleLogin} mode="login" />
             )
           }
         />
-
+        <Route
+          path="/login"
+          element={<AuthForm onLogin={handleLogin} mode="login" />}
+        />
+        <Route
+          path="/register"
+          element={<AuthForm onLogin={handleLogin} mode="register" />}
+        />
         <Route
           path="/profile"
           element={
             token ? (
               <Profile onLogout={handleLogout} />
             ) : (
-              <AuthForm onLogin={handleLogin} />
+              <AuthForm onLogin={handleLogin} mode="login" />
             )
           }
         />
