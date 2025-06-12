@@ -7,6 +7,8 @@ export default function CreatePost({ onPostCreated }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const API_BASE = "https://vibeshpere.onrender.com";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -25,7 +27,7 @@ export default function CreatePost({ onPostCreated }) {
     }
 
     try {
-      const res = await fetch("/api/posts", {
+      const res = await fetch(`${API_BASE}/api/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
