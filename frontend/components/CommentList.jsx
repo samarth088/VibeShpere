@@ -6,10 +6,12 @@ export default function CommentList({ postId, currentUser }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const API_BASE = "https://vibeshpere.onrender.com";
+
   // Fetch comments
   useEffect(() => {
     setLoading(true);
-    fetch(`https://vibeshpere.onrender.com/api/comments/${postId}`)
+    fetch(`${API_BASE}/api/comments/${postId}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to load comments");
         return res.json();
@@ -35,7 +37,7 @@ export default function CommentList({ postId, currentUser }) {
     }
 
     try {
-      const res = await fetch(`/api/comments/${postId}`, {
+      const res = await fetch(`${API_BASE}/api/comments/${postId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +67,7 @@ export default function CommentList({ postId, currentUser }) {
     if (!token) return;
 
     try {
-      const res = await fetch(`/api/comments/${commentId}`, {
+      const res = await fetch(`${API_BASE}/api/comments/${commentId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -116,4 +118,4 @@ export default function CommentList({ postId, currentUser }) {
       ))}
     </div>
   );
-}
+  }
