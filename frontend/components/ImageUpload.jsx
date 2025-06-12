@@ -5,7 +5,7 @@ export default function ImageUpload({ onUpload }) {
   const [error, setError] = useState("");
   const fileInput = useRef();
 
-  const API_BASE = "https://vibeshpere.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   const handleFileChange = async (e) => {
     if (!e.target.files.length) return;
