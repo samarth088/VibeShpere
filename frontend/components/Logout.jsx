@@ -3,15 +3,28 @@ import React, { useState } from "react";
 export default function Logout({ onLogout }) {
   const [loading, setLoading] = useState(false);
 
-  const handleLogout = () => {
+  const API_BASE = "https://vibeshpere.onrender.com";
+
+  const handleLogout = async () => {
     setLoading(true);
+    const token = localStorage.getItem("token");
+
+    // Optional backend logout call (if supported)
+    try {
+      await fetch(`${API_BASE}/api/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch (err) {
+      console.warn("Backend logout failed (safe to ignore if not implemented)", err);
+    }
+
     localStorage.removeItem("token");
 
-    // optional: small delay to show 'Logging out...'
     setTimeout(() => {
       if (onLogout) onLogout();
       setLoading(false);
-    }, 500); // 0.5 sec delay
+    }, 500);
   };
 
   return (
