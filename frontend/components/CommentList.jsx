@@ -9,7 +9,7 @@ export default function CommentList({ postId, currentUser }) {
   // Fetch comments
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/comments/${postId}`)
+    fetch(`https://vibeshpere.onrender.com/api/comments/${postId}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to load comments");
         return res.json();
