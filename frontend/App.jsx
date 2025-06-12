@@ -3,19 +3,17 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  NavLink,
-  useNavigate,
 } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
 import AuthForm from "./components/AuthForm";
 import Feed from "./components/Feed";
 import CreatePost from "./components/CreatePost";
 import Profile from "./components/Profile";
-import Logout from "./components/Logout";
 
 function AppRoutes({ token, setToken }) {
   const [postRefresh, setPostRefresh] = useState(0);
 
-  // Login
   const handleLogin = useCallback(
     (newToken) => {
       setToken(newToken);
@@ -24,7 +22,6 @@ function AppRoutes({ token, setToken }) {
     [setToken]
   );
 
-  // Logout
   const handleLogout = useCallback(() => {
     setToken(null);
     localStorage.removeItem("token");
@@ -32,53 +29,8 @@ function AppRoutes({ token, setToken }) {
 
   return (
     <>
-      {/* Navigation */}
-      <nav style={{ marginBottom: 20 }}>
-        <NavLink
-          to="/"
-          style={({ isActive }) => ({
-            fontWeight: isActive ? "bold" : "normal",
-            marginRight: 10,
-          })}
-        >
-          Feed
-        </NavLink>
-
-        {token ? (
-          <>
-            <NavLink
-              to="/profile"
-              style={({ isActive }) => ({
-                fontWeight: isActive ? "bold" : "normal",
-                marginRight: 10,
-              })}
-            >
-              Profile
-            </NavLink>
-            <Logout onLogout={handleLogout} />
-          </>
-        ) : (
-          <>
-            <NavLink
-              to="/login"
-              style={({ isActive }) => ({
-                fontWeight: isActive ? "bold" : "normal",
-                marginRight: 10,
-              })}
-            >
-              Login
-            </NavLink>
-            <NavLink
-              to="/register"
-              style={({ isActive }) => ({
-                fontWeight: isActive ? "bold" : "normal",
-              })}
-            >
-              Register
-            </NavLink>
-          </>
-        )}
-      </nav>
+      {/* Navbar */}
+      <Navbar token={token} onLogout={handleLogout} />
 
       {/* Routes */}
       <Routes>
