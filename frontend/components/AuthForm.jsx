@@ -1,59 +1,81 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function AuthForm({ onLogin, mode = "login" }) {
-  const [form, setForm] = useState({ username: "", password: "" });
+export default function AuthForm({ mode, onLogin }) {
+  const isLogin = mode === "login";
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const API_BASE =
-    import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/${mode}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const url = `${import.meta.env.VITE_API_BASE}/api/${isLogin ? "login" : "signup"}`;
+      const payload = isLogin
+        ? { username: form.username, password: form.password }
+        : form;
 
-      const data = await res.json();
+      const res = await axios.post(url, payload);
 
-      if (res.ok && data.token) {
-        if (onLogin) onLogin(data.token);
+      if (isLogin) {
+        onLogin(res.data.token); // Pass token up to App
+        navigate("/"); // Redirect to homepage
       } else {
-        setError(data.message || `${mode} failed`);
+        alert("Registration successful! You can now login.");
+        navigate("/login");
       }
     } catch (err) {
-      setError("Server error. Try again later.");
+      console.error(`${mode} failed:`, err);
+      setError(err.response?.data?.message || `${mode} failed.`);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>{mode === "register" ? "Register" : "Login"}</h2>
+      <h3>{isLogin ? "Login" : "Register"}</h3>
 
       <input
-        value={form.username}
-        onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
+        type="text"
+        name="username"
         placeholder="Username"
+        value={form.username}
+        onChange={handleChange}
         required
-      />
+      /><br />
+
+      {!isLogin && (
+        <>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          /><br />
+        </>
+      )}
 
       <input
-        value={form.password}
-        onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-        placeholder="Password"
         type="password"
+        name="password"
+        placeholder="Password"
+        value={form.password}
+        onChange={handleChange}
         required
-      />
+      /><br />
 
-      <button type="submit">
-        {mode === "register" ? "Register" : "Login"}
-      </button>
+      <button type="submit">{isLogin ? "Login" : "Register"}</button>
 
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );
 }
