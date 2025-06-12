@@ -7,17 +7,22 @@ export default function Profile({ onLogout }) {
   const [status, setStatus] = useState({ error: "", success: "" });
   const [loading, setLoading] = useState(false);
 
+  const API_BASE = "https://vibeshpere.onrender.com";
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch("/api/user/profile", {
+    fetch(`${API_BASE}/api/user/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setProfile(data);
         setForm({ username: data.username, email: data.email });
+      })
+      .catch((err) => {
+        console.error("Profile load error:", err);
       });
   }, []);
 
@@ -26,8 +31,9 @@ export default function Profile({ onLogout }) {
     setStatus({ error: "", success: "" });
     setLoading(true);
     const token = localStorage.getItem("token");
+
     try {
-      const res = await fetch("/api/user/profile", {
+      const res = await fetch(`${API_BASE}/api/user/profile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -54,26 +60,36 @@ export default function Profile({ onLogout }) {
 
   if (!profile) return <div>Loading profile...</div>;
 
-  const isChanged = form.username !== profile.username || form.email !== profile.email;
+  const isChanged =
+    form.username !== profile.username || form.email !== profile.email;
 
   return (
     <div style={{ padding: "1em", maxWidth: 400, margin: "auto" }}>
       <h2>Your Profile</h2>
 
       {status.error && <div style={{ color: "red" }}>{status.error}</div>}
-      {status.success && <div style={{ color: "green" }}>{status.success}</div>}
+      {status.success && (
+        <div style={{ color: "green" }}>{status.success}</div>
+      )}
 
       {editing ? (
-        <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}>
+        <form
+          onSubmit={handleUpdate}
+          style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}
+        >
           <input
             value={form.username}
-            onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, username: e.target.value }))
+            }
             placeholder="Username"
             required
           />
           <input
             value={form.email}
-            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, email: e.target.value }))
+            }
             placeholder="Email"
             type="email"
             required
@@ -86,7 +102,10 @@ export default function Profile({ onLogout }) {
               type="button"
               onClick={() => {
                 setEditing(false);
-                setForm({ username: profile.username, email: profile.email });
+                setForm({
+                  username: profile.username,
+                  email: profile.email,
+                });
               }}
               style={{ marginLeft: 8 }}
             >
@@ -96,12 +115,21 @@ export default function Profile({ onLogout }) {
         </form>
       ) : (
         <>
-          <p><b>Username:</b> {profile.username}</p>
-          <p><b>Email:</b> {profile.email}</p>
+          <p>
+            <b>Username:</b> {profile.username}
+          </p>
+          <p>
+            <b>Email:</b> {profile.email}
+          </p>
           <button onClick={() => setEditing(true)}>Edit</button>
-          <button onClick={handleLogout} style={{ marginLeft: 8, color: "red" }}>Logout</button>
+          <button
+            onClick={handleLogout}
+            style={{ marginLeft: 8, color: "red" }}
+          >
+            Logout
+          </button>
         </>
       )}
     </div>
   );
-          }
+}
