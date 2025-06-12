@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 
 export default function Register({ onRegisterSuccess }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: ""
+  });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -13,12 +16,13 @@ export default function Register({ onRegisterSuccess }) {
     setSuccess("");
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE}/api/auth/register`, {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE}/api/signup`,
+        form
+      );
 
-      setSuccess("Registered successfully! Please login.");
+      setSuccess("🎉 Registered successfully! Please login.");
+      setForm({ username: "", email: "", password: "" }); // reset form
       if (onRegisterSuccess) onRegisterSuccess(); // optional redirect
     } catch (err) {
       console.error("Registration failed:", err);
@@ -27,25 +31,49 @@ export default function Register({ onRegisterSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ maxWidth: "300px", margin: "auto" }}>
       <h3>Register</h3>
+
       <input
         type="text"
         placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={form.username}
+        onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
         required
-      /><br />
+        style={{ display: "block", marginBottom: 10, width: "100%" }}
+      />
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+        required
+        style={{ display: "block", marginBottom: 10, width: "100%" }}
+      />
+
       <input
         type="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={form.password}
+        onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
         required
-      /><br />
-      <button type="submit">Register</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
+        style={{ display: "block", marginBottom: 10, width: "100%" }}
+      />
+
+      <button type="submit" style={{ width: "100%" }}>
+        Register
+      </button>
+
+      {error && <p style={{ color: "red", marginTop: 10 }}>{error}</p>}
+      {success && <p style={{ color: "green", marginTop: 10 }}>{success}</p>}
+
+      <p style={{ marginTop: 15 }}>
+        Already have an account?{" "}
+        <a href="/" style={{ color: "#007bff" }}>
+          Login
+        </a>
+      </p>
     </form>
   );
 }
