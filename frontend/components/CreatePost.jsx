@@ -7,7 +7,7 @@ export default function CreatePost({ onPostCreated }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const API_BASE = "https://vibeshpere.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
