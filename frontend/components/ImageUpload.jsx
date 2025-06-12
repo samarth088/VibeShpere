@@ -5,6 +5,8 @@ export default function ImageUpload({ onUpload }) {
   const [error, setError] = useState("");
   const fileInput = useRef();
 
+  const API_BASE = "https://vibeshpere.onrender.com";
+
   const handleFileChange = async (e) => {
     if (!e.target.files.length) return;
     setUploading(true);
@@ -14,7 +16,7 @@ export default function ImageUpload({ onUpload }) {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("/api/upload", {
+      const res = await fetch(`${API_BASE}/api/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
