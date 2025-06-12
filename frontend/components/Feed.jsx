@@ -7,11 +7,13 @@ export default function Feed() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const API_BASE = "https://vibeshpere.onrender.com";
+
   useEffect(() => {
     const fetchData = async () => {
       setError("");
       try {
-        const postRes = await fetch("/api/posts");
+        const postRes = await fetch(`${API_BASE}/api/posts`);
         const postData = await postRes.json();
 
         if (!postRes.ok) throw new Error(postData.message || "Failed to load posts");
@@ -19,7 +21,7 @@ export default function Feed() {
 
         const token = localStorage.getItem("token");
         if (token) {
-          const userRes = await fetch("/api/users/me", {
+          const userRes = await fetch(`${API_BASE}/api/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const userData = await userRes.json();
