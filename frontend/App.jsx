@@ -1,5 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 import AuthForm from "./components/AuthForm";
 import Feed from "./components/Feed";
 import CreatePost from "./components/CreatePost";
@@ -9,13 +15,16 @@ import Logout from "./components/Logout";
 function AppRoutes({ token, setToken }) {
   const [postRefresh, setPostRefresh] = useState(0);
 
-  // When login is successful, set the token and store it
-  const handleLogin = useCallback((newToken) => {
-    setToken(newToken);
-    localStorage.setItem("token", newToken);
-  }, [setToken]);
+  // Login
+  const handleLogin = useCallback(
+    (newToken) => {
+      setToken(newToken);
+      localStorage.setItem("token", newToken);
+    },
+    [setToken]
+  );
 
-  // Handle logout
+  // Logout
   const handleLogout = useCallback(() => {
     setToken(null);
     localStorage.removeItem("token");
@@ -23,40 +32,66 @@ function AppRoutes({ token, setToken }) {
 
   return (
     <>
+      {/* Navigation */}
       <nav style={{ marginBottom: 20 }}>
-        <NavLink to="/" style={({ isActive }) => ({ fontWeight: isActive ? "bold" : "normal" })}>Feed</NavLink>
-        {" | "}
+        <NavLink
+          to="/"
+          style={({ isActive }) => ({
+            fontWeight: isActive ? "bold" : "normal",
+            marginRight: 10,
+          })}
+        >
+          Feed
+        </NavLink>
+
         {token && (
           <>
-            <NavLink to="/profile" style={({ isActive }) => ({ fontWeight: isActive ? "bold" : "normal" })}>
+            <NavLink
+              to="/profile"
+              style={({ isActive }) => ({
+                fontWeight: isActive ? "bold" : "normal",
+                marginRight: 10,
+              })}
+            >
               Profile
             </NavLink>
-            {" | "}
             <Logout onLogout={handleLogout} />
           </>
         )}
       </nav>
+
+      {/* Routes */}
       <Routes>
-        <Route path="/" element={
-          token ? (
-            <>
-              <CreatePost onPostCreated={() => setPostRefresh(r => r + 1)} />
-              <Feed key={postRefresh} />
-            </>
-          ) : (
-            <AuthForm onLogin={handleLogin} />
-          )
-        } />
-        <Route path="/profile" element={
-          token ? <Profile onLogout={handleLogout} /> : <AuthForm onLogin={handleLogin} />
-        } />
+        <Route
+          path="/"
+          element={
+            token ? (
+              <>
+                <CreatePost onPostCreated={() => setPostRefresh((r) => r + 1)} />
+                <Feed key={postRefresh} />
+              </>
+            ) : (
+              <AuthForm onLogin={handleLogin} />
+            )
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            token ? (
+              <Profile onLogout={handleLogout} />
+            ) : (
+              <AuthForm onLogin={handleLogin} />
+            )
+          }
+        />
       </Routes>
     </>
   );
 }
 
 export default function App() {
-  // Store token in state for instant updates
   const [token, setToken] = useState(() => localStorage.getItem("token"));
 
   return (
