@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function Logout({ onLogout }) {
   const [loading, setLoading] = useState(false);
 
-  const API_BASE = "https://vibeshpere.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   const handleLogout = async () => {
     setLoading(true);
