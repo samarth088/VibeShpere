@@ -7,7 +7,7 @@ export default function Profile({ onLogout }) {
   const [status, setStatus] = useState({ error: "", success: "" });
   const [loading, setLoading] = useState(false);
 
-  const API_BASE = "https://vibeshpere.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
