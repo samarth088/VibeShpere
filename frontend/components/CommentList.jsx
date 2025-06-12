@@ -6,7 +6,7 @@ export default function CommentList({ postId, currentUser }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const API_BASE = "https://vibeshpere.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   // Fetch comments
   useEffect(() => {
