@@ -6,8 +6,12 @@ export default function Logout({ onLogout }) {
   const handleLogout = () => {
     setLoading(true);
     localStorage.removeItem("token");
-    if (onLogout) onLogout();
-    setLoading(false);
+
+    // optional: small delay to show 'Logging out...'
+    setTimeout(() => {
+      if (onLogout) onLogout();
+      setLoading(false);
+    }, 500); // 0.5 sec delay
   };
 
   return (
