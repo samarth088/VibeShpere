@@ -4,7 +4,7 @@ export default function LikeButton({ post, currentUser, onLike }) {
   const [likes, setLikes] = useState(post.likes);
   const [isLiking, setIsLiking] = useState(false);
 
-  const API_BASE = "https://vibeshpere.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://vibeshpere.onrender.com";
 
   useEffect(() => {
     setLikes(post.likes); // update if parent passes new post
