@@ -9,6 +9,8 @@ export default function Profile({ onLogout }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return;
+
     fetch("/api/user/profile", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -19,7 +21,7 @@ export default function Profile({ onLogout }) {
       });
   }, []);
 
-  const handleUpdate = async e => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     setStatus({ error: "", success: "" });
     setLoading(true);
@@ -37,7 +39,7 @@ export default function Profile({ onLogout }) {
       if (!res.ok) throw new Error(data.message || "Update failed");
       setProfile(data);
       setEditing(false);
-      setStatus({ error: "", success: "Profile updated!" });
+      setStatus({ success: "Profile updated!", error: "" });
     } catch (err) {
       setStatus({ error: err.message, success: "" });
     }
@@ -50,18 +52,19 @@ export default function Profile({ onLogout }) {
     else window.location.reload();
   };
 
-  if (!profile) return <div>Loading...</div>;
+  if (!profile) return <div>Loading profile...</div>;
 
   const isChanged = form.username !== profile.username || form.email !== profile.email;
 
   return (
-    <div>
-      <h2>Profile</h2>
+    <div style={{ padding: "1em", maxWidth: 400, margin: "auto" }}>
+      <h2>Your Profile</h2>
+
       {status.error && <div style={{ color: "red" }}>{status.error}</div>}
       {status.success && <div style={{ color: "green" }}>{status.success}</div>}
 
       {editing ? (
-        <form onSubmit={handleUpdate}>
+        <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}>
           <input
             value={form.username}
             onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
@@ -75,21 +78,30 @@ export default function Profile({ onLogout }) {
             type="email"
             required
           />
-          <button type="submit" disabled={!isChanged || loading}>
-            {loading ? "Saving..." : "Save"}
-          </button>
-          <button type="button" onClick={() => { setEditing(false); setForm({ username: profile.username, email: profile.email }); }}>
-            Cancel
-          </button>
+          <div>
+            <button type="submit" disabled={!isChanged || loading}>
+              {loading ? "Saving..." : "Save"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(false);
+                setForm({ username: profile.username, email: profile.email });
+              }}
+              style={{ marginLeft: 8 }}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       ) : (
         <>
-          <div>Username: {profile.username}</div>
-          <div>Email: {profile.email}</div>
+          <p><b>Username:</b> {profile.username}</p>
+          <p><b>Email:</b> {profile.email}</p>
           <button onClick={() => setEditing(true)}>Edit</button>
-          <button onClick={handleLogout} style={{ marginLeft: 8 }}>Logout</button>
+          <button onClick={handleLogout} style={{ marginLeft: 8, color: "red" }}>Logout</button>
         </>
       )}
     </div>
   );
-}
+          }
