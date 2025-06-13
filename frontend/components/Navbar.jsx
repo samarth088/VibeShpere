@@ -1,54 +1,44 @@
+// components/BottomNavbar.jsx
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { Home, Search, PlusSquare, Heart, User } from "lucide-react"; // npm i lucide-react
 
-export default function Navbar({ token, onLogout }) {
+export default function BottomNavbar() {
   return (
-    <nav style={styles.nav}>
-      <NavLink to="/" style={styles.link} activeStyle={styles.active}>
-        Feed
+    <nav style={styles.navbar}>
+      <NavLink to="/" style={styles.link}>
+        <Home size={24} />
       </NavLink>
-
-      {!token && (
-        <NavLink to="/register" style={styles.link} activeStyle={styles.active}>
-          Register
-        </NavLink>
-      )}
-
-      {token && (
-        <>
-          <NavLink to="/profile" style={styles.link} activeStyle={styles.active}>
-            Profile
-          </NavLink>
-          <button onClick={onLogout} style={styles.logoutButton}>Logout</button>
-        </>
-      )}
+      <NavLink to="/search" style={styles.link}>
+        <Search size={24} />
+      </NavLink>
+      <NavLink to="/create" style={styles.link}>
+        <PlusSquare size={24} />
+      </NavLink>
+      <NavLink to="/notifications" style={styles.link}>
+        <Heart size={24} />
+      </NavLink>
+      <NavLink to="/profile" style={styles.link}>
+        <User size={24} />
+      </NavLink>
     </nav>
   );
 }
 
 const styles = {
-  nav: {
-    padding: "10px 20px",
-    background: "#f0f0f0",
-    borderBottom: "1px solid #ccc",
-    marginBottom: 20,
+  navbar: {
+    position: "fixed",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "#fff",
+    borderTop: "1px solid #ddd",
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "10px 0",
+    zIndex: 1000,
   },
   link: {
-    marginRight: 15,
     textDecoration: "none",
     color: "#333",
-    fontWeight: "500",
   },
-  active: {
-    fontWeight: "bold",
-    color: "#007bff",
-  },
-  logoutButton: {
-    marginLeft: 10,
-    background: "none",
-    border: "none",
-    color: "#d00",
-    cursor: "pointer",
-    fontWeight: "bold",
-  }
 };
