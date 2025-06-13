@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // ✅ Route files
+const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
 const commentRoutes = require('./routes/comment');
@@ -34,9 +35,10 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // ✅ API Routes
-app.use('/api/users', userRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);
+app.use('/api/auth', authRoutes);      // 🔑 Register & Login
+app.use('/api/users', userRoutes);     // 👤 Profile, Update, Password
+app.use('/api/posts', postRoutes);     // 📝 Post Routes
+app.use('/api/comments', commentRoutes); // 💬 Comments
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
