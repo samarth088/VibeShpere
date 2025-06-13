@@ -7,22 +7,22 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-// ✅ Middleware: Allow frontend requests from Vercel
+// ✅ CORS: Allow only your frontend
 app.use(cors({
-  origin: "https://vibe-shpere.vercel.app", // ✅ your frontend domain
+  origin: "https://vibeshpere.vercel.app",
   methods: ["GET", "POST"],
   credentials: true
 }));
 
-// ✅ Middleware: JSON body parser
+// ✅ Middleware
 app.use(express.json());
 
-// ✅ Root route (health check)
+// ✅ Root route (test)
 app.get('/', (req, res) => {
   res.send('API is running 🚀');
 });
 
-// ✅ MongoDB connection
+// ✅ MongoDB connect
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('✅ MongoDB connected!'))
 .catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// ✅ API routes (auth)
+// ✅ Routes
 app.use('/api', userRoutes);
 
 // ✅ Start server
