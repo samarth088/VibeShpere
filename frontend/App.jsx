@@ -5,11 +5,16 @@ import {
   Route,
 } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar"; // Optional: top navbar
+import BottomNavbar from "./components/BottomNavbar"; // ✅ Instagram-style bottom navbar
+
 import AuthForm from "./components/AuthForm";
 import Feed from "./components/Feed";
 import CreatePost from "./components/CreatePost";
 import Profile from "./components/Profile";
+import Search from "./pages/Search"; // ✅ Add this file
+import Notifications from "./pages/Notifications"; // ✅ Add this file
+import Shorts from "./pages/Shorts"; // ✅ Add this file (for /create or /shorts)
 
 function AppRoutes({ token, setToken }) {
   const [postRefresh, setPostRefresh] = useState(0);
@@ -29,7 +34,7 @@ function AppRoutes({ token, setToken }) {
 
   return (
     <>
-      {/* Navbar */}
+      {/* Top Navbar (optional) */}
       <Navbar token={token} onLogout={handleLogout} />
 
       {/* Routes */}
@@ -65,7 +70,13 @@ function AppRoutes({ token, setToken }) {
             )
           }
         />
+        <Route path="/search" element={token ? <Search /> : <AuthForm onLogin={handleLogin} mode="login" />} />
+        <Route path="/notifications" element={token ? <Notifications /> : <AuthForm onLogin={handleLogin} mode="login" />} />
+        <Route path="/create" element={token ? <Shorts /> : <AuthForm onLogin={handleLogin} mode="login" />} />
       </Routes>
+
+      {/* Bottom Navbar only when logged in */}
+      {token && <BottomNavbar />}
     </>
   );
 }
@@ -78,4 +89,4 @@ export default function App() {
       <AppRoutes token={token} setToken={setToken} />
     </BrowserRouter>
   );
-}
+    }
