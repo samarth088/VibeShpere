@@ -1,19 +1,17 @@
-const User = require('../models/User');
+const User = require("../models/User");
 
-// Example controller for register
-exports.registerUser = async (req, res) => {
+exports.getProfile = async (req, res) => {
   try {
-    // Logic to create user, hash password, etc.
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    const userId = req.user.userId;
 
-// Example controller for login
-exports.loginUser = async (req, res) => {
-  try {
-    // Logic to authenticate user, issue token, etc.
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error("Get profile error:", err.message);
+    res.status(500).json({ error: "Failed to fetch user profile" });
   }
 };
