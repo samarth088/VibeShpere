@@ -3,14 +3,21 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const userRoutes = require('./routes/userRoutes'); // ✅ Route file
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-app.use(cors());
+// ✅ Middleware: Allow frontend requests from Vercel
+app.use(cors({
+  origin: "https://vibe-shpere.vercel.app", // ✅ your frontend domain
+  methods: ["GET", "POST"],
+  credentials: true
+}));
+
+// ✅ Middleware: JSON body parser
 app.use(express.json());
 
-// ✅ Home route
+// ✅ Root route (health check)
 app.get('/', (req, res) => {
   res.send('API is running 🚀');
 });
@@ -20,14 +27,14 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('MongoDB connected!'))
-.catch((err) => console.error('MongoDB connection error:', err));
+.then(() => console.log('✅ MongoDB connected!'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// ✅ All user routes: /api/register, /api/login etc.
+// ✅ API routes (auth)
 app.use('/api', userRoutes);
 
-// ✅ Server listener
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
