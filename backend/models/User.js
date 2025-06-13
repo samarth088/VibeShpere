@@ -11,12 +11,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,      // removes spaces
-    lowercase: true  // standardizes to lowercase
+    trim: true,
+    lowercase: true
   },
   password: {
     type: String,
     required: true
+  },
+  profilePic: {
+    type: String,
+    default: "" // for profile image URL
+  },
+  bio: {
+    type: String,
+    default: "" // short description or bio
   },
   createdAt: {
     type: Date,
