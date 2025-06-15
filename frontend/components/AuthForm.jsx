@@ -18,7 +18,9 @@ export default function AuthForm({ mode, onLogin }) {
     setError("");
 
     try {
-      const url = `${import.meta.env.VITE_API_BASE}/api/${isLogin ? "login" : "signup"}`;
+      // ✅ Corrected URL
+      const url = `${import.meta.env.VITE_API_BASE}/api/auth/${isLogin ? "login" : "register"}`;
+
       const payload = isLogin
         ? { username: form.username, password: form.password }
         : form;
