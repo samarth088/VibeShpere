@@ -18,18 +18,18 @@ export default function AuthForm({ mode, onLogin }) {
     setError("");
 
     try {
-      // ✅ Corrected URL
+      // ✅ Correct URL logic
       const url = `${import.meta.env.VITE_API_BASE}/api/auth/${isLogin ? "login" : "register"}`;
 
       const payload = isLogin
-        ? { username: form.username, password: form.password }
+        ? { email: form.email, password: form.password }
         : form;
 
       const res = await axios.post(url, payload);
 
       if (isLogin) {
-        onLogin(res.data.token); // Pass token up to App
-        navigate("/"); // Redirect to homepage
+        onLogin(res.data.token);
+        navigate("/");
       } else {
         alert("Registration successful! You can now login.");
         navigate("/login");
@@ -54,6 +54,19 @@ export default function AuthForm({ mode, onLogin }) {
       /><br />
 
       {!isLogin && (
+        <>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          /><br />
+        </>
+      )}
+
+      {isLogin && (
         <>
           <input
             type="email"
